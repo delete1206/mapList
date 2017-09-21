@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{margin: 0; padding: 0;}
+
+		.imagectx{position: relative; overflow: hidden;}
+
+		.line{position: absolute; width: 1px; height: 1500px; background: red;}
+		.line2{position: absolute; width: 1077px; height: 1px; background: red;}
+		.box{width: 40px; height: 40px; background: url('box.png') no-repeat 0 0; position: absolute;}
+	</style>
+</head>
+<body>
+	<div id='imagectx' class='imagectx'>
+		<img src="bg1.png">
+	</div>
+	<button id='create' value='生成地图文件'>生成地图文件</button>
+	<script src="http://ossweb-img.qq.com/images/js/zepto/zepto1.2.min.js"></script> 
+	<script>
+		var h = 40;
+		var l = 200;
+		var tw = 40;
+		var imagectx = document.getElementById('imagectx');
+		var maplist = [];
+
+
+		for(var i=0; i<h; i++)
+		{
+			maplist.push([]);
+
+			for(var j=0; j<l; j++)
+			{
+				maplist[i].push(0);
+			}
+		}
+
+		for(var i=0; i<h; i++){
+			var line = document.createElement('div');
+			line.className = 'line2';
+			line.style.left = 0;
+			line.style.top = i * tw + 'px';;
+			imagectx.appendChild(line)
+		}
+
+		for(var j=0; j<l; j++){
+			var line = document.createElement('div');
+			line.className = 'line';
+			line.style.left = j * tw + 'px';
+			line.style.top = 0;
+			imagectx.appendChild(line)
+		}
+
+		imagectx.onclick = function(e){
+
+			var x = parseInt(e.pageX / 40);
+			var y = parseInt(e.pageY / 40);
+
+			var box = document.createElement('div');
+			box.className = 'box';
+			box.style.left = x * tw + 'px';
+			box.style.top = y * tw + 'px';
+			this.appendChild(box);
+		}
+
+// 		mapL = {
+// 			"list":maplist
+// 		}
+
+// // console.log(mapL)
+		console.log(JSON.stringify(maplist))
+
+		document.getElementById('create').onclick = function(){
+
+			$.ajax({
+
+				url : '/map',
+				data:  {
+					mapData: JSON.stringify(maplist)
+				},
+				type : 'post',
+				dataType: 'json',
+				success : function(data){
+					console.log('success');
+					// alert(1)
+				},
+				error : function(e){
+					alert('fail');
+				}	
+
+			})
+		}
+	</script>
+</body>
+</html>
